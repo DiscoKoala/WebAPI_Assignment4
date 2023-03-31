@@ -175,7 +175,7 @@ router.put('/movies', authJwtController.isAuthenticated, function(req, res) {
     movie.genre = req.body.genre;
     movie.actorList = req.body.actorList;
 
-    Movie.updateOne(function(err, movies){
+    Movie.updateOne(function(err, movie){
         if(err){
             return res.status(500).send(err)
             }
@@ -194,6 +194,7 @@ router.post('./reviews',  authJwtController.isAuthenticated, function(req, res) 
     var newReview = new Review()
     newReview.movieID = req.body.movieID,
     newReview.username = req.body.username,
+    newReview.review = req.body.review,
     newReview.rating = req.body.rating
 
     newReview.save(function(err){
@@ -203,28 +204,53 @@ router.post('./reviews',  authJwtController.isAuthenticated, function(req, res) 
             else
                 return res.json(err);
         }
-        res.json({success: true, msg: 'Successfully add new movie review!'})
+        
+        res.json({success: true, msg: 'Review created!'})
     });
 });
 
 router.get('./reviews',  authJwtController.isAuthenticated, function(req, res) {
     var review = new Review();
     review.movieID = req.body.movieID
+    
+    if(req.query.review == "true"){
+        review.aggregate(([
+            {
+                $lookup: 
+                {
+                    from: "review",
+                    localField: " _id",
+                    foreignField: "movieID",
+                    as: "reviews"
+                }
+            },
+            {
+                $addField: { average_rating: { $avg: "$reviews.rating"} }
+            },
+            {
+                $sort: {average_rating: -1}
+            }
 
-    if(!review){
-        res.status(404).send({success: false, message: 'Query failed. Review not found.'});
-    } 
-    else {
-        Review.find(function(err, movies){
-            if(err){
-                return res.status(500).send(err)
-                }
-                else{
-                res.status(200).json(review);
-                }
-            })
-             
-        }
+        ])).exec((err, review) =>{
+            res.json(review)
+        })    
+    } else{
+
+        if(!review){
+            res.status(404).send({success: false, message: 'Query failed. Review not found.'});
+        } 
+        else {
+            Review.find(function(err, review){
+                if(err){
+                    return res.status(500).send(err)
+                    }
+                    else{
+                    res.status(200).json(review);
+                    }
+                })
+                
+            }
+    }
 });
 
 router.route('/testcollection')
