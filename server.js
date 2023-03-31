@@ -186,7 +186,7 @@ router.put('/movies', authJwtController.isAuthenticated, function(req, res) {
     }
 );
 
-router.post('./reviews',  authJwtController.isAuthenticated, function(req, res) {
+router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     if(!req.body.movieID){
         res.json({success: false, msg: 'Please include movie ID.'})
     }
@@ -209,7 +209,7 @@ router.post('./reviews',  authJwtController.isAuthenticated, function(req, res) 
     });
 });
 
-router.get('./reviews',  authJwtController.isAuthenticated, function(req, res) {
+router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     var review = new Review();
     review.movieID = req.body.movieID
     
