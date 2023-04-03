@@ -94,42 +94,20 @@ router.get('/movies', authJwtController.isAuthenticated, function(req, res) {
     var movies = new Movie()
     movies.title = req.body.title;
     
-    if(req.query.review == "true"){
-        movies.aggregate(([
-            {
-                $lookup: 
-                {
-                    from: "review",
-                    localField: " _id",
-                    foriegnField: "movieID",
-                    as: "reviews"
-                }
-            },
-            {
-                $addField: { average_rating: { $avg: "$reviews.rating"} }
-            },
-            {
-                $sort: {average_rating: -1}
+    if(!movies){
+        res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
+    } 
+    else {
+        Movie.find(function(err, movies){
+            if(err){
+                return res.status(500).send(err)
+            } 
+            else{
+                res.status(200).json(movies);
             }
-
-        ])).exec((err, movies) =>{
-            res.json(movies)
-        })    
-    } else{
-        if(!movies){
-            res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
-        } 
-        else {
-            Movie.find(function(err, movies){
-                if(err){
-                    return res.status(500).send(err)
-                } 
-                else{
-                    res.status(200).json(movies);
-                }
-            })                
-        }
+        })                
     }
+
 });
 
 router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
@@ -247,9 +225,9 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
                     else{
                     res.status(200).json(review);
                     }
-                })
+            })
                 
-            }
+        }
     }
 });
 
