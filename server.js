@@ -182,7 +182,6 @@ router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
             else
                 return res.json(err);
         }
-        
         res.json({success: true, msg: 'Review created!'})
     });
 });
@@ -211,7 +210,7 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
             }
 
         ])).exec((err, review) =>{
-            res.json(review)
+            return res.json(review)
         })    
     } else{
 
