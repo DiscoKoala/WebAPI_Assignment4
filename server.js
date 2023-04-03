@@ -221,8 +221,8 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
             Review.find(function(err, review){
                 if(err){
                     return res.status(500).send(err)
-                    }
-                    else{
+                }
+                else{
                     res.status(200).json(review);
                     }
             })
