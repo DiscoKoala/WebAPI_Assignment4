@@ -211,10 +211,10 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
 
         ])).exec((err, review) =>{
             return res.json(review)
-        })    
+        }) 
     } else{
 
-        if(!review){
+        if(!review.review){
             res.status(404).send({success: false, message: 'Query failed. Review not found.'});
         } 
         else {
