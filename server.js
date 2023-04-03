@@ -196,7 +196,7 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
             {
                 $lookup: 
                 {
-                    from: "review",
+                    from: "reviews",
                     localField: " _id",
                     foreignField: "movieID",
                     as: "reviews"
