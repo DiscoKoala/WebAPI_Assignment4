@@ -190,8 +190,9 @@ router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
 router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     var review = new Review();
     review.movieID = req.body.movieID
+    review.review = req.body.review
     
-    if(req.query.review == "true"){
+    if(review.review === "true"){
         review.aggregate(([
             {
                 $lookup: 
