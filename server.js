@@ -214,7 +214,7 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
         }) 
     } else{
 
-        if(!review.review == "true"){
+        if(!review){
             res.status(404).send({success: false, message: 'Query failed. Review not found.'});
         } 
         else {
