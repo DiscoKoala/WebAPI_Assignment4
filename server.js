@@ -210,7 +210,7 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
             }
 
         ])).exec((err, review) =>{
-            return res.json(review)
+            return res.json(err)
         }) 
     } else{
 
