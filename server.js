@@ -238,11 +238,14 @@ router.route('/movies/:movieID')
         var movie = new Movie()
         movie.title = req.body.title
 
-        movie.aggregate(([
+        movie.aggregate([
             {
-                $match: {title: "Paddington Bear"}
+                $match: 
+                {
+                    title: "Paddington Bear"
+                }
             }
-        ])).exec((err, movie) =>{
+        ]).exec((err, movie) =>{
             return res.json(movie)
             })
 });
