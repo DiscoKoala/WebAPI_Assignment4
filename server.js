@@ -240,7 +240,7 @@ router.route('/movies/:movieID')
 
         movie.aggregate(([
             {
-                $match: {title: movie.title}
+                $match: {title: "Paddington Bear"}
             }
         ])).exec((err, movie) =>{
             return res.json(movie)
