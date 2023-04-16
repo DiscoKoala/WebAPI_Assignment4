@@ -235,9 +235,8 @@ router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
 
 router.route('/movies/:movieID')
     .get(authJwtController.isAuthenticated, function(req,res) {
-        var movie = new Movie( {ofObjectID: Movie.Types.ObjectId})
-        movie.title = req.body.title,
-        movie.movieID = req.body.ObjectId
+        var movie = new Movie()
+        movie.title = req.body.title
 
         movie.aggregate(([
             {
