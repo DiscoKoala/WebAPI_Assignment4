@@ -99,7 +99,7 @@ router.get('/movies', authJwtController.isAuthenticated, function(req, res) {
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
     } 
     else {
-        Movie.findOne(function(err, movies){
+        Movie.find(function(err, movies){
             if(err){
                 return res.status(500).send(err)
             } 
@@ -166,13 +166,13 @@ router.put('/movies', authJwtController.isAuthenticated, function(req, res) {
     }
 );
 
-router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
+router.post('/reviews', authJwtController.isAuthenticated, function(req, res) {
     if(!req.body.movieID){
         res.json({success: false, msg: 'Please include movie ID.'})
     }
 
     var newReview = new Review()
-    newReview.objectId = req.body.objectId,
+    newReview.objectId = req.body.movieID,
     newReview.username = req.body.username,
     newReview.review = req.body.review,
     newReview.rating = req.body.rating
@@ -188,9 +188,9 @@ router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     });
 });
 
-router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
-    var review = new Review();
-    review.objectId = req.body.objectId
+router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
+    var review = new Review()
+    review.movieID = req.body.ObjectId,
     review.review = req.body.review
     
     if(review.review === "true"){
@@ -233,6 +233,21 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     }
 });
 
+router.route('/movies/:movieID')
+    .get(authJwtController.isAuthenticated, function(req,res) {
+        var movie = new Movie( {ofObjectID: Movie.Types.ObjectId})
+        movie.title = req.body.title,
+        movie.movieID = req.body.ObjectId
+
+        movie.aggregate(([
+            {
+                $match: {title: movie.title}
+            }
+        ])).exec((err, movie) =>{
+            return res.json(movie)
+            })
+});
+
 router.route('/testcollection')
     .delete(authJwtController.isAuthenticated, function(req, res) {
         console.log(req.body);
@@ -258,6 +273,4 @@ router.route('/testcollection')
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
-
-
 
