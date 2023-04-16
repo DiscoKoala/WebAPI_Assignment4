@@ -158,7 +158,7 @@ router.put('/movies', authJwtController.isAuthenticated, function(req, res) {
             return res.status(500).send(err)
             }
             else{
-            res.status(200).json({success: true, message: "Movie updated!"});
+            res.status(200).json({success: true, message: "Movie updated!", message: movie});
             }
         })
     }
