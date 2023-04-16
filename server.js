@@ -98,7 +98,7 @@ router.get('/movies', authJwtController.isAuthenticated, function(req, res) {
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
     } 
     else {
-        Movie.find(function(err, movies){
+        Movie.findOne(function(err, movies){
             if(err){
                 return res.status(500).send(err)
             } 
