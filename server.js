@@ -119,6 +119,7 @@ router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
     newMovie.releaseDate = req.body.releaseDate;
     newMovie.genre = req.body.genre;
     newMovie.actorList = req.body.actorList;
+    newMovie.image = req.body.image;
     
     newMovie.save(function(err){
         if (err) {
