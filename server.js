@@ -238,17 +238,36 @@ router.route('/movies/:movieID')
         var movie = new Movie()
         movie.title = req.body.title
 
-        movie.aggregate([
-            {
-                $match: 
+        if(movie.title != NULL){
+            movie.aggregate([
                 {
-                    title: "Paddington Bear"
+                    $match: 
+                    {
+                        title: "Paddington Bear"
+                    }
                 }
+            ]).exec((err, movie) =>{
+                return res.json(movie)
+                })
+        
+        } else{
+            if(!movie){
+                res.status(404).send({success: false, message: 'Query failed. Review not found.'});
+            } 
+            else {
+                Movie.find(function(err, movie){
+                    if(err){
+                        return res.status(500).send(err)
+                    }
+                    else{
+                        res.status(200).json(movie);
+                        }
+                })
+                    
             }
-        ]).exec((err, movie) =>{
-            return res.json(movie)
-            })
-});
+        }
+    });
+        
 
 router.route('/testcollection')
     .delete(authJwtController.isAuthenticated, function(req, res) {
