@@ -14,6 +14,7 @@ var cors = require('cors');
 var User = require('./Users');
 var Movie = require('./Movies');
 var Review = require('./Reviews')
+var mongoose = require('mongoose');
 
 var app = express();
 app.use(cors());
@@ -171,7 +172,7 @@ router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     }
 
     var newReview = new Review()
-    newReview.movieID = req.body.movieID,
+    newReview.objectId = req.body.objectId,
     newReview.username = req.body.username,
     newReview.review = req.body.review,
     newReview.rating = req.body.rating
@@ -189,7 +190,7 @@ router.post('/reviews',  authJwtController.isAuthenticated, function(req, res) {
 
 router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
     var review = new Review();
-    review.movieID = req.body.movieID
+    review.objectId = req.body.objectId
     review.review = req.body.review
     
     if(review.review === "true"){
@@ -233,7 +234,7 @@ router.get('/reviews',  authJwtController.isAuthenticated, function(req, res) {
 });
 
 router.route('/testcollection')
-    .delete(authController.isAuthenticated, function(req, res) {
+    .delete(authJwtController.isAuthenticated, function(req, res) {
         console.log(req.body);
         res = res.status(200);
         if (req.get('Content-Type')) {
