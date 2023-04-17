@@ -125,7 +125,7 @@ router.route('/movies')
     // return the movies 
     res.json(movies); 
     }); 
-} 
+}},
 
 router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
     if(!req.body.title){
@@ -147,7 +147,7 @@ router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
         }
         res.json({success: true, msg: 'Successfully add new movie.'})
     });  
-});
+}));
 
 router.delete('/movies', authJwtController.isAuthenticated, function(req, res) {
     var newMovie = new Movie();
