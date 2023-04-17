@@ -91,25 +91,41 @@ router.post('/signin', function(req, res) {
 // GET /Movies request response. If review(s) for movie exist, aggregate data
 // from both movie and review entities.
 // Otherwise, return list of movies.
-router.get('/movies', authJwtController.isAuthenticated, function(req, res) {
-    var movies = new Movie()
-    // movies.title = req.body.title;
+router.route('/movies') 
+    .get(authJwtController.isAuthenticated, function (req, res) { 
+    if (req.query.reviews == "true") { 
+        Movie.aggregate([
+            { 
+                $lookup: {
+                    from: "reviews",
+                    localField: "_id",
+                    foreignField: "movieID",
+                    as: "reviews"
+                } 
+            },
     
-    if(!movies){
-        res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
-    } 
-    else {
-        Movie.find(function(err, movies){
-            if(err){
-                return res.status(500).send(err)
-            } 
-            else{
-                res.status(200).json(movies);
+            { 
+                $addFields:{
+                    average_rating:{$avg: '$reviews.rating'}
+                } 
+            },
+         
+            { 
+                $sort:{average_rating:-1}
             }
-        })                
-    }
+        ]).exec(function (err, movies) { 
+            if (err) res.status(500).send(err); 
+            // return the movies 
+            res.json(movies); 
+          }); 
 
-});
+} else { 
+    Movie.find(function (err, movies) { 
+    if (err) res.status(500).send(err); 
+    // return the movies 
+    res.json(movies); 
+    }); 
+} 
 
 router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
     if(!req.body.title){
@@ -172,7 +188,7 @@ router.post('/reviews', authJwtController.isAuthenticated, function(req, res) {
     }
 
     var newReview = new Review()
-    newReview.objectId = req.body.movieID,
+    newReview.movieID = req.body.movieID,
     newReview.username = req.body.username,
     newReview.review = req.body.review,
     newReview.rating = req.body.rating
@@ -190,7 +206,7 @@ router.post('/reviews', authJwtController.isAuthenticated, function(req, res) {
 
 router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
     var review = new Review()
-    review.movieID = req.body.ObjectId,
+    review.movieID = req.body.movieID,
     review.review = req.body.review
 
     if(!review){
