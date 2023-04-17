@@ -227,7 +227,7 @@ router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
     }
 });
 
-router.route('/movies/:movieId') 
+router.route('/movies/:movieID') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
     var id = req.params.movieId; 
     if (req.query.reviews == "true") { 
