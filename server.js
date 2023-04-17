@@ -224,7 +224,7 @@ router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
 
 router.route('/movies/:movieID') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = req.params.movieID; 
+    var id = req.body.movieID; 
     if (req.query.reviews == "true") { 
         Movie.aggregate([ 
             { 
