@@ -93,42 +93,42 @@ router.post('/signin', function(req, res) {
 // Otherwise, return list of movies.
 router.route('/movies') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    if (req.query.reviews == "true") { 
-        Movie.aggregate([
-            {
-                $match:{ _id: mongoose.Types.ObjectId(id)}
-            },
+        if (req.query.reviews == "true") { 
+            Movie.aggregate([
+                {
+                    $match:{ _id: mongoose.Types.ObjectId(id)}
+                },
 
-            { 
-                $lookup: {
-                    from: "reviews",
-                    localField: "_id",
-                    foreignField: "movieID",
-                    as: "reviews"
-                } 
-            },
-    
-            { 
-                $addFields:{
-                    average_rating:{$avg: '$reviews.rating'}
-                } 
-            },
-         
-            { 
-                $sort:{average_rating:-1}
-            }
-        ]).exec(function (err, movies) { 
-            if (err) res.status(500).send(err); 
-            // return the movies 
-            res.json(movies); 
-          }); 
+                { 
+                    $lookup: {
+                        from: "reviews",
+                        localField: "_id",
+                        foreignField: "movieID",
+                        as: "reviews"
+                    } 
+                },
+        
+                { 
+                    $addFields:{
+                        average_rating:{$avg: '$reviews.rating'}
+                    } 
+                },
+            
+                { 
+                    $sort:{average_rating:-1}
+                }
+            ]).exec(function (err, movies) { 
+                if (err) res.status(500).send(err); 
+                // return the movies 
+                res.json(movies); 
+            }); 
 
-} else { 
-    Movie.find(function (err, movies) { 
-    if (err) res.status(500).send(err); 
-    // return the movies 
-    res.json(movies); 
-    }); 
+    } else { 
+        Movie.find(function (err, movies) { 
+        if (err) res.status(500).send(err); 
+        // return the movies 
+        res.json(movies); 
+        }); 
 }},
 
 router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
@@ -238,6 +238,25 @@ router.route('/movies/:movieId')
                     _id: mongoose.Types.ObjectId(id) 
                 }
             }, 
+
+            { 
+                $lookup: {
+                    from: "reviews",
+                    localField: "_id",
+                    foreignField: "movieID",
+                    as: "reviews"
+                } 
+            },
+    
+            { 
+                $addFields:{
+                    average_rating:{$avg: '$reviews.rating'}
+                } 
+            },
+        
+            { 
+                $sort:{average_rating:-1}
+            }
         //all the other pipeline functions from before (e.g. lookup, average, sort 
         ]).exec(function (err, movies) { 
             if (err) res.status(500).send(err); 
