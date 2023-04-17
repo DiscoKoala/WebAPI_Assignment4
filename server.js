@@ -93,7 +93,7 @@ router.post('/signin', function(req, res) {
 // Otherwise, return list of movies.
 router.get('/movies', authJwtController.isAuthenticated, function(req, res) {
     var movies = new Movie()
-    movies.title = req.body.title;
+    // movies.title = req.body.title;
     
     if(!movies){
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
@@ -192,81 +192,47 @@ router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
     var review = new Review()
     review.movieID = req.body.ObjectId,
     review.review = req.body.review
-    
-    if(review.review === "true"){
-        review.aggregate(([
-            {
-                $lookup: 
-                {
-                    from: "reviews",
-                    localField: " _id",
-                    foreignField: "movieID",
-                    as: "reviews"
-                }
-            },
-            {
-                $addField: { average_rating: { $avg: "$reviews.rating"} }
-            },
-            {
-                $sort: {average_rating: -1}
+
+    if(!review){
+        res.status(404).send({success: false, message: 'Query failed. Review not found.'});
+    } else {
+        Review.find(function(err, review){
+            if(err){
+                return res.status(500).send(err)
             }
-
-        ])).exec((err, review) =>{
-            return res.json(review)
-        }) 
-    } else{
-
-        if(!review){
-            res.status(404).send({success: false, message: 'Query failed. Review not found.'});
-        } 
-        else {
-            Review.find(function(err, review){
-                if(err){
-                    return res.status(500).send(err)
+            else{
+                res.status(200).json(review);
                 }
-                else{
-                    res.status(200).json(review);
-                    }
-            })
-                
-        }
+        })      
     }
 });
 
-router.route('/movies/:movieID')
-    .get(authJwtController.isAuthenticated, function(req,res) {
-        var movie = new Movie()
-        movie.title = req.body.title
-
-        if(movie.title != NULL){
-            movie.aggregate([
-                {
-                    $match: 
-                    {
-                        title: "Paddington Bear"
-                    }
+router.route('/movies/:movieId') 
+    .get(authJwtController.isAuthenticated, function (req, res) { 
+    var id = req.params.movieId; 
+    if (req.query.reviews == "true") { 
+        Movie.aggregate([ 
+            { 
+                $match: 
+                { 
+                    _id: mongoose.Types.ObjectId(id) 
                 }
-            ]).exec((err, movie) =>{
-                return res.json(movie)
-                })
-        
-        } else{
-            if(!movie){
-                res.status(404).send({success: false, message: 'Query failed. Review not found.'});
-            } 
-            else {
-                Movie.find(function(err, movie){
-                    if(err){
-                        return res.status(500).send(err)
-                    }
-                    else{
-                        res.status(200).json(movie);
-                        }
-                })
-                    
-            }
-        }
-    });
+            }, 
+        //all the other pipeline functions from before (e.g. lookup, average, sort 
+        ]).exec(function (err, movies) { 
+            if (err) res.status(500).send(err); 
+            // return the movies 
+            res.json(movies[0]); 
+        }); 
+
+        } else { 
+            Movie.findById(id, function (err, movie) { 
+            if (err) res.status(500).send(err); 
+            
+            res.json(movie); 
+            }); 
+        } 
+}) 
         
 
 router.route('/testcollection')
