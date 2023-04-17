@@ -223,7 +223,7 @@ router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
 
 router.route('/movies/:movieID') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = mongoose.Types.ObjectId(req.params.movieID); 
+    var id = mongoose.Types.ObjectId(req.params.title); 
     if (req.query.reviews == "true") { 
         Movie.aggregate([ 
             { 
