@@ -205,7 +205,6 @@ router.post('/reviews', authJwtController.isAuthenticated, function(req, res) {
 
 router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
     var review = new Review()
-    review.movieID = req.body.movieID,
     review.review = req.body.review
 
     if(!review){
@@ -224,7 +223,7 @@ router.get('/reviews', authJwtController.isAuthenticated, function(req, res) {
 
 router.route('/movies/:movieID') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = req.body.movieID; 
+    var id = mongoose.Types.ObjectId(req.params.movieID); 
     if (req.query.reviews == "true") { 
         Movie.aggregate([ 
             { 
