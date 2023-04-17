@@ -95,22 +95,17 @@ router.route('/movies')
     .get(authJwtController.isAuthenticated, function (req, res) { 
         if (req.query.reviews == "true") { 
             Movie.aggregate([
-                {
-                    $match:{ _id: mongoose.Types.ObjectId(id)}
-                },
-
                 { 
                     $lookup: {
-                        from: "reviews",
+                        from: "movies",
                         localField: "_id",
-                        foreignField: "movieID",
-                        as: "reviews"
+                        as: "movies"
                     } 
                 },
         
                 { 
                     $addFields:{
-                        average_rating:{$avg: '$reviews.rating'}
+                        average_rating:{$avg: '$movies.rating'}
                     } 
                 },
             
@@ -129,7 +124,7 @@ router.route('/movies')
         // return the movies 
         res.json(movies); 
         }); 
-}},
+}}),
 
 router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
     if(!req.body.title){
@@ -151,7 +146,7 @@ router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
         }
         res.json({success: true, msg: 'Successfully add new movie.'})
     });  
-}));
+});
 
 router.delete('/movies', authJwtController.isAuthenticated, function(req, res) {
     var newMovie = new Movie();
