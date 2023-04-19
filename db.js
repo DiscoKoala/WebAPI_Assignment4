@@ -31,7 +31,7 @@ module.exports = function () {
         findOne: function (name) {
             if (name) {
                 return this.userList.find(function (element) {
-                    return element.username === movieID;
+                    return element.username === name;
                 });
             }
             else {
