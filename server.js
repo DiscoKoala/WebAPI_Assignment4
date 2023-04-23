@@ -150,14 +150,13 @@ router.route('/movies')
     .delete(authJwtController.isAuthenticated, function(req, res) {
         var newMovie = new Movie();
         newMovie.title = req.body.title;
-        newMovie.releaseDate = req.body.releaseDate;
 
-        Movie.deleteOne($eq, {title: newMovie.title}, function(err, movie){
+        Movie.deleteOne($eq, {title: newMovie.title}, function(err, newMovie){
             if(err){
                 return res.status(500).send(err)
                 }
             else{
-                res.status(200).json({success: true, message: movie.title, message: " deleted"});
+                res.status(200).json({success: true, message: newMovie.title, message: " deleted"});
             }
             })
     })
