@@ -93,7 +93,7 @@ router.post('/signin', function(req, res) {
 // Otherwise, return list of movies.
 router.route('/movies') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-        if (req.query.reviews == "true") { 
+        if (req.bod.reviews == "true") { 
             Movie.aggregate([
                 { 
                     $lookup: {
@@ -178,7 +178,7 @@ router.route('/movies')
     );
 
 router.route('/reviews')
-    .post('/reviews', authJwtController.isAuthenticated, function(req, res) {
+    .post(authJwtController.isAuthenticated, function(req, res) {
         if(!req.body.movieID){
             res.json({success: false, msg: 'Please include movie ID.'})
         }
@@ -200,7 +200,7 @@ router.route('/reviews')
         });
     })
 
-    .get('/reviews', authJwtController.isAuthenticated, function(req, res) {
+    .get(authJwtController.isAuthenticated, function(req, res) {
         var review = new Review()
         review.review = req.body.review
 
