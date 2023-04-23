@@ -126,7 +126,7 @@ router.route('/movies')
         }); 
     }
 })
-    .post( authJwtController.isAuthenticated, function(req, res) {
+    .post(authJwtController.isAuthenticated, function(req, res) {
         if(!req.body.title){
             res.json({success: false, msg: 'Please include movie title.'})
         }
