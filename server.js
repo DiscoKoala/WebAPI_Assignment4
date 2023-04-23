@@ -151,7 +151,7 @@ router.route('/movies')
         var newMovie = new Movie();
         newMovie.title = req.body.title;
 
-        newMovie.deleteOne($eq, {title: newMovie.title}, function(err, newMovie){
+        Movie.deleteOne($eq, {title: newMovie.title}, function(err, newMovie){
             if(err){
                 return res.status(500).send(err)
                 }
