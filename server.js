@@ -93,7 +93,7 @@ router.post('/signin', function(req, res) {
 // Otherwise, return list of movies.
 router.route('/movies') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-        if (req.bod.reviews == "true") { 
+        if (req.query.reviews == "true") { 
             Movie.aggregate([
                 { 
                     $lookup: {
@@ -220,7 +220,7 @@ router.route('/reviews')
 
 router.route('/movies/:movieID') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = mongoose.Types.ObjectId(req.params.title); 
+    var id = mongoose.Types.ObjectId(req.params.movieID); 
     if (req.query.reviews == "true") { 
         Movie.aggregate([ 
             { 
