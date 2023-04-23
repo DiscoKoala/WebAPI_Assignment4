@@ -7,7 +7,7 @@ require('dotenv').config();
 var express = require('express');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var authController = require('./auth');
+// var authController = require('./auth');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
@@ -124,62 +124,60 @@ router.route('/movies')
         // return the movies 
         res.json(movies); 
         }); 
-}}),
-
-router.post('/movies', authJwtController.isAuthenticated, function(req, res) {
-    if(!req.body.title){
-        res.json({success: false, msg: 'Please include movie title.'})
     }
-    var newMovie = new Movie()
-    newMovie.title = req.body.title;
-    newMovie.releaseDate = req.body.releaseDate;
-    newMovie.genre = req.body.genre;
-    newMovie.actorList = req.body.actorList;
-    newMovie.image = req.body.image;
-    
-    newMovie.save(function(err){
-        if (err) {
-            if (err.code == 11000)
-                return res.json({ success: false, message: 'A movie with that title already exists.'});
-            else
-                return res.json(err);
+})
+    .post( authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body.title){
+            res.json({success: false, msg: 'Please include movie title.'})
         }
-        res.json({success: true, msg: 'Successfully add new movie.'})
-    });  
-});
-
-router.delete('/movies', authJwtController.isAuthenticated, function(req, res) {
-    var newMovie = new Movie();
-    newMovie.title = req.body.title;
-    newMovie.releaseDate = req.body.releaseDate;
-
-    Movie.deleteOne({title: newMovie.title},function(err, movie){
-        if(err){
-            return res.status(500).send(err)
+        var newMovie = new Movie()
+        newMovie.title = req.body.title;
+        newMovie.releaseDate = req.body.releaseDate;
+        newMovie.genre = req.body.genre;
+        newMovie.actorList = req.body.actorList;
+        newMovie.image = req.body.image;
+        
+        newMovie.save(function(err){
+            if (err) {
+                if (err.code == 11000)
+                    return res.json({ success: false, message: 'A movie with that title already exists.'});
+                else
+                    return res.json(err);
             }
-        else{
-            res.status(200).json({success: true, message: "Movie deleted!"});
-        }
-        })
-});
+            res.json({success: true, msg: 'Successfully add new movie.'})
+        });  
+})
+    .delete(authJwtController.isAuthenticated, function(req, res) {
+        var newMovie = new Movie();
+        newMovie.title = req.body.title;
+        newMovie.releaseDate = req.body.releaseDate;
 
-router.put('/movies', authJwtController.isAuthenticated, function(req, res) {
-    var movie = new Movie()
-    movie.title = req.body.title;
-    movie.releaseDate = req.body.releaseDate;
-    movie.genre = req.body.genre;
-    movie.actorList = req.body.actorList;
-
-    Movie.updateOne(function(err, movie){
-        if(err){
-            return res.status(500).send(err)
-            }
+        Movie.deleteOne($eq, {title: newMovie.title}, function(err, movie){
+            if(err){
+                return res.status(500).send(err)
+                }
             else{
-            res.status(200).json({success: true, message: "Movie updated!", message: movie});
+                res.status(200).json({success: true, message: movie.title, message: " deleted"});
             }
-        })
-    }
-);
+            })
+    })
+    .put(authJwtController.isAuthenticated, function(req, res) {
+        var movie = new Movie()
+        movie.title = req.body.title;
+        movie.releaseDate = req.body.releaseDate;
+        movie.genre = req.body.genre;
+        movie.actorList = req.body.actorList;
+    
+        Movie.updateOne(function(err, movie){
+            if(err){
+                return res.status(500).send(err)
+                }
+                else{
+                res.status(200).json({success: true, message: "Movie updated!", message: movie});
+                }
+            })
+        }
+    );
 
 router.post('/reviews', authJwtController.isAuthenticated, function(req, res) {
     if(!req.body.movieID){
