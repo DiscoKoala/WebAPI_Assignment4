@@ -201,7 +201,8 @@ router.route('/reviews')
     })
 
     .get(authJwtController.isAuthenticated, function(req, res) {
-        var review = new Review()
+        var review = new Review() 
+        review.movieID = req.body.movieID
         review.review = req.body.review
 
         if(!review){
