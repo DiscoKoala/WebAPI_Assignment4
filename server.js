@@ -181,23 +181,23 @@ router.route('/movies')
         }
     )
 
-router.route('/movies/:movieId') 
+router.route('/movies/:title') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = mongoose.types.ObjectId(req.params.movieId)
+    var id = req.params.title
     if (req.body.reviews == "true") { 
         Movie.aggregate([ 
             { 
                 $match: 
                 { 
-                    title: id
+                    title: movieId
                 }
             }, 
 
             { 
                 $lookup: {
-                    from: "movies",
-                    localField: "title",
-                    foreignField: "movieID",
+                    from: "reviews",
+                    localField: "movieId",
+                    foreignField: "title",
                     as: "reviews"
                 } 
             },
