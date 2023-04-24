@@ -102,7 +102,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
         } else {
             Movie.find(function(err, movies){
                 if(err){
-                    return res.status(500).send(err)
+                    res.status(500).send(err)
                 }
                 else{
                     res.status(200).json(movies);
@@ -161,9 +161,9 @@ router.route('/movies')
         newMovie.save(function(err){
             if (err) {
                 if (err.code == 11000)
-                    return res.json({ success: false, message: 'A movie with that title already exists.'});
+                    res.json({ success: false, message: 'A movie with that title already exists.'});
                 else
-                    return res.json(err);
+                    res.json(err);
             }
             res.json({success: true, msg: 'Successfully add new movie.'})
         });  
@@ -173,10 +173,10 @@ router.route('/movies')
 
         Movie.deleteOne($eq, {title: movieTitle}, function(err, movie){
             if(err){
-                return res.status(500).send(err)
+                res.status(500).send(err)
                 }
             else{
-                res.status(200).json({success: true, message: movie.title, message: " deleted"});
+                res.status(200).json({success: true, message: `${movie.title} deleted`});
             }
         }).exec()
     })
@@ -189,10 +189,10 @@ router.route('/movies')
     
         Movie.updateOne(function(err, movie){
             if(err){
-                return res.status(500).send(err)
+                    res.status(500).send(err)
                 }
                 else{
-                res.status(200).json({success: true, message: "Movie updated!"});
+                    res.status(200).json({success: true, message: `${movie.title} updated!`});
                 }
             })
         }
@@ -214,9 +214,9 @@ router.route('/reviews')
         newReview.save(function(err){
             if (err) {
                 if (err.code == 500)
-                    return res.json({ success: false, message: 'Internal server error'});
+                    res.json({ success: false, message: 'Internal server error'});
                 else
-                    return res.json(err);
+                    res.json(err);
             }
             res.json({success: true, msg: 'Review created!'})
         });
@@ -232,7 +232,7 @@ router.route('/reviews')
         } else {
             Review.find(function(err, review){
                 if(err){
-                    return res.status(500).send(err)
+                    res.status(500).send(err)
                 }
                 else{
                     res.status(200).json(review);
