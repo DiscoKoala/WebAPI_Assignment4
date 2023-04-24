@@ -189,7 +189,7 @@ router.route('/movies/:title')
             { 
                 $match: 
                 { 
-                    title: movieId
+                    title: id
                 }
             }, 
 
