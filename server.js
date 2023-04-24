@@ -102,7 +102,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
         } else {
             Movie.find(function(err, movies){
                 if(err){
-                    res.status(500).send(err)
+                   return res.status(500).send(err)
                 }
                 else{
                     res.status(200).json(movies);
@@ -134,14 +134,14 @@ router.route('/movies')
                     $sort:{average_rating:-1}
                 }
             ]).exec(function (err, movies) { 
-                if (err) res.status(500).send(err); 
+                if (err) return res.status(500).send(err); 
                 // return the movies 
                 res.json(movies); 
             }); 
 
     } else { 
         Movie.find(function (err, movies) { 
-        if (err) res.status(500).send(err); 
+        if (err) return res.status(500).send(err); 
         // return the movies 
         res.json(movies); 
         }); 
@@ -161,11 +161,12 @@ router.route('/movies')
         newMovie.save(function(err){
             if (err) {
                 if (err.code == 11000)
-                    res.json({ success: false, message: 'A movie with that title already exists.'});
+                    return res.json({ success: false, message: 'A movie with that title already exists.'});
                 else
-                    res.json(err);
+                    return res.json(err);
+            }else{
+                res.json({success: true, msg: 'Successfully add new movie.'})
             }
-            res.json({success: true, msg: 'Successfully add new movie.'})
         });  
 })
     .delete(authJwtController.isAuthenticated, function(req, res) {
@@ -173,7 +174,7 @@ router.route('/movies')
 
         Movie.deleteOne($eq, {title: movieTitle}, function(err, movie){
             if(err){
-                res.status(500).send(err)
+                return res.status(500).send(err)
                 }
             else{
                 res.status(200).json({success: true, message: `${movie.title} deleted`});
@@ -189,7 +190,7 @@ router.route('/movies')
     
         Movie.updateOne(function(err, movie){
             if(err){
-                    res.status(500).send(err)
+                    return res.status(500).send(err)
                 }
                 else{
                     res.status(200).json({success: true, message: `${movie.title} updated!`});
@@ -214,11 +215,12 @@ router.route('/reviews')
         newReview.save(function(err){
             if (err) {
                 if (err.code == 500)
-                    res.json({ success: false, message: 'Internal server error'});
+                    return res.json({ success: false, message: 'Internal server error'});
                 else
                     res.json(err);
+            } else{
+                res.json({success: true, msg: 'Review created!'})
             }
-            res.json({success: true, msg: 'Review created!'})
         });
     })
 
@@ -232,7 +234,7 @@ router.route('/reviews')
         } else {
             Review.find(function(err, review){
                 if(err){
-                    res.status(500).send(err)
+                    return res.status(500).send(err)
                 }
                 else{
                     res.status(200).json(review);
@@ -273,14 +275,14 @@ router.route('/movies/:movieID')
             }
         //all the other pipeline functions from before (e.g. lookup, average, sort 
         ]).exec(function (err, movies) { 
-            if (err) res.status(500).send(err); 
+            if (err) return res.status(500).send(err); 
             // return the movies 
             res.json(movies[0]); 
         }); 
 
         } else { 
             Movie.findById(id, function (err, movie) { 
-            if (err) res.status(500).send(err); 
+            if (err) return res.status(500).send(err); 
             
             res.json(movie); 
             }); 
