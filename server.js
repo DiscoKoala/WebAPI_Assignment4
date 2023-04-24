@@ -92,25 +92,6 @@ router.post('/signin', function(req, res) {
 // from both movie and review entities.
 // Otherwise, return list of movies.
 
-router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
-    var movies = new Movie() 
-        movies.title = req.body.title
-        movies.review = req.body.review
-
-        if(!movies){
-            res.status(404).send({success: false, message: 'Query failed. Review not found.'});
-        } else {
-            Movie.find(function(err, movies){
-                if(err){
-                   return res.status(500).send(err)
-                }
-                else{
-                    res.status(200).json(movies);
-                    }
-            }).exec()
-        }
-})
-
 router.route('/movies') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
         if (req.query.reviews == "true") { 
@@ -198,54 +179,28 @@ router.route('/movies')
             })
         }
     );
+router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
+    var movies = new Movie() 
+        movies.title = req.body.title
+        movies.review = req.body.review
 
-router.route('/reviews')
-    .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.title){
-            res.json({success: false, msg: 'Please include movie ID.'})
-        }
-
-        var newReview = new Review()
-        newReview.title = req.body.title
-        newReview.movieID = req.body.movieID,
-        newReview.username = req.body.username,
-        newReview.review = req.body.review,
-        newReview.rating = req.body.rating
-
-        newReview.save(function(err){
-            if (err) {
-                if (err.code == 500)
-                    return res.json({ success: false, message: 'Internal server error'});
-                else
-                    res.json(err);
-            } else{
-                res.json({success: true, msg: 'Review created!'})
-            }
-        });
-    })
-
-    .get(authJwtController.isAuthenticated, function(req, res) {
-        var review = new Review() 
-        review.title = req.body.title
-        review.review = req.body.review
-
-        if(!review){
+        if(!movies){
             res.status(404).send({success: false, message: 'Query failed. Review not found.'});
         } else {
-            Review.find(function(err, review){
+            Movie.find(function(err, movies){
                 if(err){
                     return res.status(500).send(err)
                 }
                 else{
-                    res.status(200).json(review);
+                    res.status(200).json(movies);
                     }
             }).exec()
         }
-    })
+}),
 
 router.route('/movies/:movieID') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = req.params.movieID; 
+    var id = req.params.movieId; 
     if (req.query.reviews == "true") { 
         Movie.aggregate([ 
             { 
@@ -288,7 +243,50 @@ router.route('/movies/:movieID')
             }); 
         } 
 }) 
-        
+
+router.route('/reviews')
+    .post(authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body.title){
+            res.json({success: false, msg: 'Please include movie ID.'})
+        }
+
+        var newReview = new Review()
+        newReview.title = req.body.title
+        newReview.movieId = req.body.movieId,
+        newReview.username = req.body.username,
+        newReview.review = req.body.review,
+        newReview.rating = req.body.rating
+
+        newReview.save(function(err){
+            if (err) {
+                if (err.code == 500)
+                    return res.json({ success: false, message: 'Internal server error'});
+                else
+                    res.json(err);
+            } else{
+                res.json({success: true, msg: 'Review created!'})
+            }
+        });
+    })
+
+    .get(authJwtController.isAuthenticated, function(req, res) {
+        var review = new Review() 
+        review.title = req.body.title
+        review.review = req.body.review
+
+        if(!review){
+            res.status(404).send({success: false, message: 'Query failed. Review not found.'});
+        } else {
+            Review.find(function(err, review){
+                if(err){
+                    return res.status(500).send(err)
+                }
+                else{
+                    res.status(200).json(review);
+                    }
+            }).exec()
+        }
+    })  
 
 router.route('/testcollection')
     .delete(authJwtController.isAuthenticated, function(req, res) {

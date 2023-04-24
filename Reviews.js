@@ -7,7 +7,7 @@ mongoose.connect(process.env.DB);
 var ReviewSchema = new Schema({
     
     title: {type:String, required: true},
-    movieID: {type: mongoose.Types.ObjectId, required: true},
+    movieId: {type: mongoose.Types.ObjectId, required: true},
     username: {type: String, required: true, index: { unique: true }},
     review: {type: String, required: true},
     rating: {type: Number, required: true}
