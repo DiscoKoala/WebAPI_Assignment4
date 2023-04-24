@@ -123,6 +123,7 @@ router.route('/movies')
     } else { 
         Movie.find(function (err, movies) { 
         if (err) return res.status(500).send(err); 
+        console.log(movies)
         // return the movies 
         res.json(movies); 
         }); 
@@ -245,11 +246,12 @@ router.route('/movies/:movieId')
 
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.movieId){
+        if(!req.body.title){
             res.json({success: false, msg: 'Please include movie ID.'})
         }
 
         var newReview = new Review()
+        newReview.title = req.body.title;
         newReview.movieId = req.body.movieId,
         newReview.username = req.body.username,
         newReview.review = req.body.review,
@@ -261,7 +263,7 @@ router.route('/reviews')
             } 
             else{
                 res.json({success: true, msg: 'Review created!'})
-                  }
+                }
         });
     })
 
