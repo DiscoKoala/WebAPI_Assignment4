@@ -189,7 +189,7 @@ router.route('/movies/:movieId')
             { 
                 $match: 
                 { 
-                    movieId: id
+                    movieId: mongoose.Types.ObjectId(id)
                 }
             }, 
 
