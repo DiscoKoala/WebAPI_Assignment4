@@ -107,12 +107,12 @@ router.route('/movies')
         
                 { 
                     $addFields:{
-                        average_rating:{$avgRating: `$movies.rating`}
+                        avgRating:{$avg: `$movies.rating`}
                     } 
                 },
             
                 { 
-                    $sort:{average_rating:-1}
+                    $sort:{avgRating:-1}
                 }
             ]).exec(function (err, movies) { 
                 if (err) return res.status(500).send(err); 
@@ -204,12 +204,12 @@ router.route('/movies/:movieId')
     
             { 
                 $addFields:{
-                    average_rating:{$avgRating: '$reviews.rating'}
+                    avgRating:{$avg: '$reviews.rating'}
                 } 
             },
         
             { 
-                $sort:{average_rating:-1}
+                $sort:{avgRating:-1}
             }
         ]).exec(function (err, movies) { 
             if (err) return res.status(500).send(err); 
