@@ -107,7 +107,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
                 else{
                     res.status(200).json(movies);
                     }
-            })      
+            }).exec()
         }
 })
 
@@ -178,7 +178,7 @@ router.route('/movies')
             else{
                 res.status(200).json({success: true, message: movie.title, message: " deleted"});
             }
-        })
+        }).exec()
     })
     .put(authJwtController.isAuthenticated, function(req, res) {
         var movie = new Movie()
@@ -205,6 +205,7 @@ router.route('/reviews')
         }
 
         var newReview = new Review()
+        newReview.title = req.body.title
         newReview.movieID = req.body.movieID,
         newReview.username = req.body.username,
         newReview.review = req.body.review,
@@ -213,7 +214,7 @@ router.route('/reviews')
         newReview.save(function(err){
             if (err) {
                 if (err.code == 500)
-                    return res.json({ success: false, message: 'Something went wrong.'});
+                    return res.json({ success: false, message: 'Internal server error'});
                 else
                     return res.json(err);
             }
@@ -223,7 +224,7 @@ router.route('/reviews')
 
     .get(authJwtController.isAuthenticated, function(req, res) {
         var review = new Review() 
-        review.movieID = req.body.movieID
+        review.title = req.body.title
         review.review = req.body.review
 
         if(!review){
@@ -236,7 +237,7 @@ router.route('/reviews')
                 else{
                     res.status(200).json(review);
                     }
-            })      
+            }).exec()
         }
     })
 
