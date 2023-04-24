@@ -200,7 +200,7 @@ router.route('/movies')
 
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.movieID){
+        if(!req.body.title){
             res.json({success: false, msg: 'Please include movie ID.'})
         }
 
@@ -257,7 +257,7 @@ router.route('/movies/:movieID')
                 $lookup: {
                     from: "reviews",
                     localField: "title",
-                    foreignField: "movieID",
+                    foreignField: "title",
                     as: "reviews"
                 } 
             },
