@@ -201,7 +201,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
 router.route('/movies/:movieId') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
     var id = req.params.movieId; 
-    if (req.query.reviews == "true") { 
+    if (req.body.reviews == "true") { 
         Movie.aggregate([ 
             { 
                 $match: 
@@ -258,13 +258,11 @@ router.route('/reviews')
 
         newReview.save(function(err){
             if (err) {
-                if (err.code == 500)
-                    return res.json({ success: false, message: 'Internal server error'});
-                else
-                    res.json(err);
-            } else{
+                return res.json(err);
+            } 
+            else{
                 res.json({success: true, msg: 'Review created!'})
-            }
+                  }
         });
     })
 
