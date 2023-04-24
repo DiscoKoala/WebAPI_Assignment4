@@ -183,13 +183,13 @@ router.route('/movies')
 
 router.route('/movies/:movieId') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = req.params.movieId
+    var id = mongoose.types.ObjectId(req.params.movieId)
     if (req.body.reviews == "true") { 
         Movie.aggregate([ 
             { 
                 $match: 
                 { 
-                    movieId: mongoose.Types.ObjectId(id)
+                    movieId: id
                 }
             }, 
 
