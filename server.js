@@ -107,7 +107,7 @@ router.route('/movies')
         
                 { 
                     $addFields:{
-                        average_rating:{$avg: `$movies.rating`}
+                        average_rating:{$avgRating: `$movies.rating`}
                     } 
                 },
             
@@ -189,7 +189,7 @@ router.route('/movies/:movieId')
             { 
                 $match: 
                 { 
-                    _id: id 
+                    _id: mongoose.Types.ObjectId({id}) 
                 }
             }, 
 
@@ -204,7 +204,7 @@ router.route('/movies/:movieId')
     
             { 
                 $addFields:{
-                    average_rating:{$avg: '$reviews.rating'}
+                    average_rating:{$avgRating: '$reviews.rating'}
                 } 
             },
         
