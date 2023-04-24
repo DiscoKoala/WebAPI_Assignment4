@@ -252,7 +252,6 @@ router.route('/reviews')
 
         var newReview = new Review()
         newReview.title = req.body.title;
-        newReview.movieId = mongoose.Types.ObjectId(),
         newReview.username = req.body.username,
         newReview.review = req.body.review,
         newReview.rating = req.body.rating
