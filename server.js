@@ -198,7 +198,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
         }
 }),
 
-router.route('/movies/:movieID') 
+router.route('/movies/:movieId') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
     var id = req.params.movieId; 
     if (req.query.reviews == "true") { 
@@ -228,7 +228,6 @@ router.route('/movies/:movieID')
             { 
                 $sort:{average_rating:-1}
             }
-        //all the other pipeline functions from before (e.g. lookup, average, sort 
         ]).exec(function (err, movies) { 
             if (err) return res.status(500).send(err); 
             // return the movies 
@@ -237,9 +236,9 @@ router.route('/movies/:movieID')
 
         } else { 
             Movie.findById(id, function (err, movie) { 
-            if (err) return res.status(500).send(err); 
+                if (err) return res.status(500).send(err); 
             
-            res.json(movie); 
+                res.json(movie); 
             }); 
         } 
 }) 
@@ -279,7 +278,7 @@ router.route('/reviews')
         } else {
             Review.find(function(err, review){
                 if(err){
-                    return res.status(500).send(err)
+                    return res.status(500).json({success: false, message: "Review not found"})
                 }
                 else{
                     res.status(200).json(review);
