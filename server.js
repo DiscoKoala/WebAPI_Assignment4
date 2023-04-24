@@ -200,7 +200,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
 
 router.route('/movies/:movieId') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = req.params.movieId; 
+    var id = mongoose.Types.ObjectId(req.params.movieId) 
     if (req.body.reviews == "true") { 
         Movie.aggregate([ 
             { 
