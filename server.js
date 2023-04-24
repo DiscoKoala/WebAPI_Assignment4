@@ -138,7 +138,7 @@ router.route('/movies')
         newMovie.releaseDate = req.body.releaseDate;
         newMovie.genre = req.body.genre;
         newMovie.actorList = req.body.actorList;
-        newMovie.image = req.body.image;
+        newMovie.imageURL = req.body.imageURL;
         
         newMovie.save(function(err){
             if (err) {
@@ -179,25 +179,7 @@ router.route('/movies')
                 }
             })
         }
-    );
-router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
-    var movies = new Movie() 
-        movies.title = req.body.title
-        movies.review = req.body.review
-
-        if(!movies){
-            res.status(404).send({success: false, message: 'Query failed. Review not found.'});
-        } else {
-            Movie.find(function(err, movies){
-                if(err){
-                    return res.status(500).send(err)
-                }
-                else{
-                    res.status(200).json(movies);
-                    }
-            }).exec()
-        }
-}),
+    )
 
 router.route('/movies/:movieId') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
