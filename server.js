@@ -228,13 +228,12 @@ router.route('/movies/:movieId')
 
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.title){
+        if(!req.body.movieId){
             res.json({success: false, msg: 'Please include movie ID.'})
         }
 
         var newReview = new Review()
-        newReview.title = req.body.title;
-        newReview.movieId = new mongoose.Types.ObjectId(),
+        newReview.movieId = req.body.movideId;
         newReview.username = req.body.username,
         newReview.review = req.body.review,
         newReview.rating = req.body.rating
