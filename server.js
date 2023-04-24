@@ -200,7 +200,7 @@ router.get('/movielist', authJwtController.isAuthenticated, function(req, res){
 
 router.route('/movies/:movieId') 
     .get(authJwtController.isAuthenticated, function (req, res) { 
-    var id = mongoose.Types.ObjectId(req.params.movieId) 
+    var id = req.params.movieId
     if (req.body.reviews == "true") { 
         Movie.aggregate([ 
             { 
@@ -212,9 +212,9 @@ router.route('/movies/:movieId')
 
             { 
                 $lookup: {
-                    from: "reviews",
+                    from: "movies",
                     localField: "title",
-                    foreignField: "title",
+                    foreignField: "movieID",
                     as: "reviews"
                 } 
             },
@@ -245,12 +245,11 @@ router.route('/movies/:movieId')
 
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.title){
+        if(!req.body.movieId){
             res.json({success: false, msg: 'Please include movie ID.'})
         }
 
         var newReview = new Review()
-        newReview.title = req.body.title
         newReview.movieId = req.body.movieId,
         newReview.username = req.body.username,
         newReview.review = req.body.review,
